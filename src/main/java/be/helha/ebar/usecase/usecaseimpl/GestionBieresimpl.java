@@ -1,20 +1,19 @@
-package be.helha.dao.daoimpl;
+package be.helha.ebar.usecase.usecaseimpl;
 
-
-import be.helha.dao.BiereDao;
-import be.helha.ebar.biere.Biere;
 import be.helha.dao.daoimpl.DaoFactory;
+import be.helha.ebar.biere.Biere;
+import be.helha.ebar.usecase.GestionBieres;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 
 
-
-public class BiereDaoImpl implements BiereDao {
-    @Override
+public class GestionBieresimpl implements GestionBieres {
     public Biere getBiere(String name) {
         String sql = "SELECT * FROM bieres WHERE nom = name ";
         Biere biere = null;
@@ -100,25 +99,30 @@ public class BiereDaoImpl implements BiereDao {
         PreparedStatement preparedStatement = null;
 
         try {
+            // Connexion à la base de données
             DaoFactory dao = DaoFactory.getInstance();
             connection = dao.getConnexion();
 
+            // Requête SQL d'insertion
             String query = "INSERT INTO bieres(nom, type, couleur, brasserie) VALUES (?, ?, ?, ?)";
 
+            // Préparation de la requête
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, biere.getNom());
             preparedStatement.setString(2, biere.getType());
             preparedStatement.setString(3, biere.getCouleur());
             preparedStatement.setString(4, biere.getBrasserie());
 
+            // Exécution de la requête
             int rowsInserted = preparedStatement.executeUpdate();
 
+            // Vérification si l'insertion a réussi
             if (rowsInserted > 0) {
                 System.out.println("Une nouvelle bière a été insérée avec succès.");
                 success = true;
             }
         } finally {
-
+            // Fermeture des ressources
             if (preparedStatement != null) {
                 preparedStatement.close();
             }
@@ -130,6 +134,5 @@ public class BiereDaoImpl implements BiereDao {
         return success;
     }
 }
-
 
 

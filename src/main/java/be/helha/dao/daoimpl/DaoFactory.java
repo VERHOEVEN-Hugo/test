@@ -7,6 +7,8 @@ import java.sql.SQLException;
 public class DaoFactory {
 
     private static DaoFactory instance;
+    private static final String FICHIER_CONFIGURATION = "src/test/resources/configPostgres1.json";
+    
 
     private DaoFactory() {
     }
@@ -22,11 +24,16 @@ public class DaoFactory {
         return new BiereDaoImpl();
     }
 
-    public static Connection getConnexion() throws SQLException {
-        String URL = "jdbc:postgresql://localhost:5432/postgres";
-        String USER = "postgre";
-        String MDP = "1234";
-        return DriverManager.getConnection(URL, USER, MDP);
+    public Connection getConnexion() throws SQLException {
+        Connection connection;
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","1234");
+        }catch(SQLException | ClassNotFoundException e)
+        {
+            throw new RuntimeException();
+        }
+return connection;
     }
 }
 
