@@ -14,12 +14,17 @@ import java.util.List;
 
 
 public class BiereDaoImpl implements BiereDao {
+    private DaoFactory daoFactory;
+
+    public BiereDaoImpl(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
+
     @Override
     public Biere getBiere(String name) {
-        String sql = "SELECT * FROM bieres WHERE nom = name ";
+        String sql = "SELECT * FROM bieres WHERE nom = ?";
         Biere biere = null;
-        DaoFactory dao = DaoFactory.getInstance();
-        try (Connection connection = dao.getConnexion();
+        try (Connection connection = daoFactory.getConnexion();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();

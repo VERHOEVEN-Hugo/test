@@ -5,35 +5,32 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DaoFactory {
-
     private static DaoFactory instance;
-    private static final String FICHIER_CONFIGURATION = "src/test/resources/configPostgres1.json";
-    
 
-    private DaoFactory() {
-    }
-
+    private DaoFactory() {}
 
     public static DaoFactory getInstance() {
         if (instance == null) instance = new DaoFactory();
         return instance;
     }
 
-
     public BiereDaoImpl getBiereDao() {
-        return new BiereDaoImpl();
+        return new BiereDaoImpl(this); // Passer l'instance actuelle de DaoFactory à BiereDaoImpl
     }
 
     public Connection getConnexion() throws SQLException {
         Connection connection;
         try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","1234");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Connexion à la base de données MySQL
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ebar?useSSL=false&serverTimezone=UTC", "root", "");
+
         }catch(SQLException | ClassNotFoundException e)
         {
             throw new RuntimeException();
         }
-return connection;
+    return connection;
     }
 }
 
